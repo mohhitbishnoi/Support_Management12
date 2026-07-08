@@ -1,0 +1,18 @@
+﻿using Domain.Commons;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Domain.Entitis;
+public class Ticket: BaseAuditableEntity
+{
+    public string TicketTitle { get; set; }
+    public string TicketDescription{get; set;}
+    public string Status { get; set; }
+    public string TicketPriority { get; set; }
+    public ICollection<TicketReply> Replies { get; set; }
+    public ICollection<TicketAttechment> Attechments { get; set; }
+    public ICollection<TicketHistroy> TicketHistories { get; set; }
+
+}
+

@@ -1,0 +1,35 @@
+﻿using Application.Interfaces.Repository;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Persistence.DataContexts;
+using Persistence.Extension.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Text;
+namespace Persistence.Extension;
+
+public static class ServiceCollectionExtension
+{
+    public static void AddPersistenceLayer(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddDbContext(configuration);
+        services.AddRepository(configuration);
+    }
+
+public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+    }
+    public static void AddRepository(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+    }
+
+}
+
+

@@ -39,15 +39,15 @@ public class AdminController : ControllerBase
 
     }
     [HttpPut("Update-Employee")]
-    public async Task<IActionResult>UpdateEmployee (UpdateEmployeeCommand cmd)
+    public async Task<IActionResult>UpdateEmployee (int id)
     {
-        var result = await _mediator.Send(cmd);
+        var result = await _mediator.Send(new UpdateEmployeeCommand(id));
             return ResponseHelper.GenerateResponse(result);
     }
     [HttpDelete("Delete-Employee")]
-    public async Task<IActionResult>DeleteEmployee(DeleteEmployeeCommand cmd)
+    public async Task<IActionResult>DeleteEmployee(int id)
     {
-        var result = await _mediator.Send(cmd);
+        var result = await _mediator.Send(new DeleteEmployeeCommand(id) );
         return ResponseHelper.GenerateResponse(result);
     }
     [HttpGet("View-Employee")]

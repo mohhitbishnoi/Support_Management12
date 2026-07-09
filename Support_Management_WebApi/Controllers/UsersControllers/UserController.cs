@@ -23,15 +23,16 @@ public class UserController : ControllerBase
         return ResponseHelper.GenerateResponse(result);
     }
     [HttpPut("User-Update")]
-    public async Task<IActionResult>UpdateUser(UpdateUserCommand command)
+    public async Task<IActionResult> UpdateUser(int id, CreateUserCommand command)
     {
-        var res = await _mediator.Send(command);
+        var res = await _mediator.Send(new UpdateUserCommand(id, command));
+
         return ResponseHelper.GenerateResponse(res);
     }
     [HttpDelete("Delete-User")]
-    public async Task<IActionResult>DeleteUser(DeleteUserCommand command)
+    public async Task<IActionResult>DeleteUser(int id)
     {
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(new DeleteUserCommand(id));
         return ResponseHelper.GenerateResponse(result);
     }
     [HttpGet("GetUser-id")]

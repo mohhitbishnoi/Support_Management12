@@ -1,44 +1,59 @@
 ﻿using Application.Dtos.Users;
 using Application.Interfaces.Repository;
-using AutoMapper;
 using Domain.Entitis;
+using Domain.Entitis.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Features.Users.Queries;
 
-public class GetUserByIdQuery:IRequest<Result<GetUserDto>>
+public class GetUserByIdQuery : IRequest<Result<GetUserDto>>
 {
     public int Id { get; set; }
 
     public GetUserByIdQuery(int id)
     {
         Id = id;
-
     }
 }
+
 internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<GetUserDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    public GetUserByIdQueryHandler(IUnitOfWork unitOfWork , IMapper mapper)
+
+    public GetUserByIdQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _mapper = mapper;
     }
-    public async Task<Result<GetUserDto>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+
+    public async Task<Result<GetUserDto>> Handle(
+        GetUserByIdQuery request,
+        CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork.Repository<User>().GetByIdAsync(request.Id);
-        if (user == null)
+        var customer = await _unitOfWork.Repository<User>()
+            .Entities
+            .Include(x => x.Role)
+            .Where(x => x.Id == request.Id
+                     && x.RoleId == (int)RoleId.Customer
+                     && !x.IsDeleted)
+            .Select(x => new GetUserDto
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                RoleId = (RoleId)x.RoleId,
+                RoleName = x.Role != null ? x.Role.RoleName : string.Empty
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (customer == null)
         {
-            return Result<GetUserDto>.BadRequest("User not found.");
+            return Result<GetUserDto>.BadRequest("Customer not found.");
         }
 
-        var result = _mapper.Map<GetUserDto>(user);
-
-        return Result<GetUserDto>.Success(result, "User .....");
+        return Result<GetUserDto>.Success(customer, "Customer Details");
     }
 }

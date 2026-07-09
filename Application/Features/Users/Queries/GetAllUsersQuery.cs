@@ -1,37 +1,51 @@
-﻿using Application.Commons.Mappings;
-using Application.Dtos.Users;
+﻿using Application.Dtos.Users;
 using Application.Interfaces.Repository;
-using AutoMapper;
 using Domain.Entitis;
+using Domain.Entitis.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Application.Features.Users.Queries;
 
-public class GetAllUsersQuery:IRequest<Result<List<GetUserDto>>>
+public class GetAllUsersQuery : IRequest<Result<List<GetUserDto>>>
 {
 }
-internal class GetAllUsersQueryHandler:IRequestHandler<GetAllUsersQuery, Result<List<GetUserDto>>>
+
+internal class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<List<GetUserDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-    
-    public GetAllUsersQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+
+    public GetAllUsersQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _mapper = mapper;
     }
 
-public async Task<Result<List<GetUserDto>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetUserDto>>> Handle(
+        GetAllUsersQuery request,
+        CancellationToken cancellationToken)
     {
-        var users = await _unitOfWork.Repository<User>().GetAllAsync();
-       var result = _mapper.Map<List<GetUserDto>>(users);
+        var customers = await _unitOfWork.Repository<User>()
+            .Entities
+            .Include(x => x.Role)
+            .Where(x => x.RoleId == (int)RoleId.Customer && !x.IsDeleted)
+            .Select(x => new GetUserDto
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Email = x.Email,
+                PhoneNumber = x.PhoneNumber,
+                RoleId = (RoleId)x.RoleId,
+                RoleName = x.Role != null ? x.Role.RoleName : string.Empty
+            })
+            .ToListAsync(cancellationToken);
 
-        return Result<List<GetUserDto>>.Success(result, "Users...");
-        
+        if (!customers.Any())
+        {
+            return Result<List<GetUserDto>>.BadRequest("Customer not found.");
+        }
+
+        return Result<List<GetUserDto>>.Success(customers, "Customer List");
     }
 }

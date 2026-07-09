@@ -1,7 +1,8 @@
 ﻿using Application.Interfaces.Repository;
-using AutoMapper;
 using Domain.Entitis;
+using Domain.Entitis.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Features.Users.Commands;
@@ -9,37 +10,63 @@ namespace Application.Features.Users.Commands;
 public class UpdateUserCommand : IRequest<Result<string>>
 {
     public int Id { get; set; }
-    public CreateUserCommand createUser { get; set; }
-    public UpdateUserCommand(int id, CreateUserCommand createUserCommand)
+
+    public CreateUserCommand CreateUser { get; set; }
+
+    public UpdateUserCommand(int id, CreateUserCommand createUser)
     {
         Id = id;
-        createUser = createUserCommand;
+        CreateUser = createUser;
     }
+
     internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Result<string>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public UpdateUserCommandHandler(IUnitOfWork unitOfWork,IMapper mapper)
+        public UpdateUserCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<Result<string>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.Repository<User>().GetByIdAsync(request.Id);
-           
-            //user.FirstName = request.createUser.FirstName;
-            //user.LastName = request.createUser.LastName;
-            //user.Email = request.createUser.Email;
-            //user.PhoneNumber = request.createUser.PhoneNumber;
-            //user.Password = request.createUser.Password;
+            
+            var customer = await _unitOfWork.Repository<User>()
+                .Entities
+                .FirstOrDefaultAsync(x =>
+                    x.Id == request.Id &&
+                    x.RoleId == (int)RoleId.Customer &&
+                    !x.IsDeleted,
+                    cancellationToken);
 
-            _mapper.Map(request.createUser,user);
-            await _unitOfWork.Repository<User>().PutAsync(request.Id,user);
+            if (customer == null)
+            {
+                return Result<string>.BadRequest("Customer not found.");
+            }
+            
+            var emailExists = await _unitOfWork.Repository<User>()
+                .Entities
+                .AnyAsync(x =>
+                    x.Email == request.CreateUser.Email &&
+                    x.Id != request.Id &&
+                    !x.IsDeleted,
+                    cancellationToken);
+
+            if (emailExists)
+            {
+                return Result<string>.BadRequest("Email already exists.");
+            }
+            customer.FirstName = request.CreateUser.FirstName;
+            customer.LastName = request.CreateUser.LastName;
+            customer.Email = request.CreateUser.Email;
+            customer.PhoneNumber = request.CreateUser.PhoneNumber;
+            customer.Password = request.CreateUser.Password;
+            customer.RoleId = (int)RoleId.Customer;
+
+            await _unitOfWork.Repository<User>().PutAsync(customer.Id, customer);
             await _unitOfWork.Save(cancellationToken);
-            return Result<string>.Success("User updated successfully.");
+
+            return Result<string>.Success("Customer updated successfully.");
         }
     }
 }

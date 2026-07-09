@@ -22,6 +22,11 @@ public class UpdateEmployeeCommand : IRequest<Result<string>>, ICreateMapFrom<Us
 
     public long PhoneNumber { get; set; }
 
+    public UpdateEmployeeCommand(int id)
+    {
+        Id = id;
+    }
+
     internal class UpdateEmployeeCommandHandler: IRequestHandler<UpdateEmployeeCommand, Result<string>>
     {
         private readonly IUnitOfWork _unitOfWork;

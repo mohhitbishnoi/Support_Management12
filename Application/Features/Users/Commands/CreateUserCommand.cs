@@ -20,34 +20,36 @@ public class CreateUserCommand : IRequest<Result<string>>, ICreateMapFrom<User>
     internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<string>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public CreateUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateUserCommandHandler(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<Result<string>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var emailExists = await _unitOfWork.Repository<User>()
                 .Entities
-                .AnyAsync(x => x.Email == request.Email, cancellationToken);
+                .AnyAsync(x => x.Email == request.Email && !x.IsDeleted, cancellationToken);
 
             if (emailExists)
             {
                 return Result<string>.BadRequest("Email already exists.");
             }
+            var customer = new User
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                Password = request.Password,
+                RoleId = (int)RoleId.Customer 
+            };
 
-            var user = _mapper.Map<User>(request);
-
-            // Default Customer Role
-            user.RoleId = (int)RoleId.Customer;
-
-            await _unitOfWork.Repository<User>().PostAsync(user);
+            await _unitOfWork.Repository<User>().PostAsync(customer);
             await _unitOfWork.Save(cancellationToken);
 
-            return Result<string>.Success("User Created Successfully.");
+            return Result<string>.Success("Customer Registered Successfully.");
         }
     }
 }

@@ -1,49 +1,52 @@
 ﻿using Application.Dtos.Users;
 using Application.Interfaces.Repository;
 using Domain.Entitis;
+using Domain.Entitis.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Application.Features.Roles_Access.Admin
+namespace Application.Features.Roles_Access.Admin;
+
+public class ViewUsersQuery : IRequest<Result<List<GetUserDto>>>
 {
-    public class ViewUsersQuery : IRequest<Result<List<GetUserDto>>>
+    internal class ViewUsersQueryHandler : IRequestHandler<ViewUsersQuery, Result<List<GetUserDto>>>
     {
-        internal class ViewUsersQueryHandler
-            : IRequestHandler<ViewUsersQuery, Result<List<GetUserDto>>>
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ViewUsersQueryHandler(IUnitOfWork unitOfWork)
         {
-            private readonly IUnitOfWork _unitOfWork;
+            _unitOfWork = unitOfWork;
+        }
 
-            public ViewUsersQueryHandler(IUnitOfWork unitOfWork)
+        public async Task<Result<List<GetUserDto>>> Handle(
+            ViewUsersQuery request,
+            CancellationToken cancellationToken)
+        {
+            var users = await _unitOfWork.Repository<User>()
+                .Entities
+                .Include(x => x.Role)
+                .Where(x => !x.IsDeleted)
+                .Select(x => new GetUserDto
+                {
+                    Id = x.Id,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    Password = x.Password,
+
+                    RoleId = (RoleId)x.RoleId,
+                    RoleName = x.Role != null ? x.Role.RoleName : string.Empty
+                })
+                .ToListAsync(cancellationToken);
+
+            if (!users.Any())
             {
-                _unitOfWork = unitOfWork;
+                return Result<List<GetUserDto>>.BadRequest("No users found.");
             }
 
-            public async Task<Result<List<GetUserDto>>> Handle(
-                ViewUsersQuery request,
-                CancellationToken cancellationToken)
-            {
-                var users = await _unitOfWork
-                    .Repository<User>()
-                    .Entities
-                    .Include(x => x.Role)
-                    .Where(x => !x.IsDeleted)
-                    .Select(x => new GetUserDto
-                    {
-                        Id = x.Id,
-                        FirstName = x.FirstName,
-                        LastName = x.LastName,
-                        Email = x.Email,
-                        PhoneNumber = x.PhoneNumber,
-                        RoleName = x.Role != null ? x.Role.RoleName : ""
-                    })
-                    .ToListAsync(cancellationToken);
-
-                return Result<List<GetUserDto>>.Success(users,"");
-            }
+            return Result<List<GetUserDto>>.Success(users, "Users fetched successfully.");
         }
     }
 }

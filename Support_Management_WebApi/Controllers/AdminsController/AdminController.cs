@@ -51,9 +51,9 @@ public class AdminController : ControllerBase
         return ResponseHelper.GenerateResponse(result);
     }
     [HttpGet("View-Employee")]
-    public async Task<IActionResult>GetEmployee(ViewAllEmployeeQuery query)
+    public async Task<IActionResult>GetEmployee()
     {
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(new ViewAllEmployeeQuery());
         return ResponseHelper.GenerateResponse(result);
     }
     [HttpGet("View-Tickets")]

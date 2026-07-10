@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Application.Features.Roles_Access.Admin;
 
-public class DeleteEmployeeCommand:IRequest<Result<string>>,ICreateMapFrom<User>
+public class DeleteEmployeeCommand:IRequest<Result<string>>
 {
     public int Id { get; set; }
 

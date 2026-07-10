@@ -10,22 +10,18 @@ using System.Text;
 
 namespace Application.Features.Roles_Access.Admin;
 
-public class UpdateEmployeeCommand : IRequest<Result<string>>, ICreateMapFrom<User>
+public class UpdateEmployeeCommand : IRequest<Result<string>>
 {
-    public int Id { get; set; }
-
-    public string FirstName { get; set; }
-
-    public string LastName { get; set; }
-
-    public string Email { get; set; }
-
-    public long PhoneNumber { get; set; }
-
-    public UpdateEmployeeCommand(int id)
+    public UpdateEmployeeCommand(int id, AddEmployeeCommand command)
     {
         Id = id;
+        Command = command;
     }
+
+    public int Id { get; set; }
+
+    public AddEmployeeCommand Command { get; set; }
+
 
     internal class UpdateEmployeeCommandHandler: IRequestHandler<UpdateEmployeeCommand, Result<string>>
     {
@@ -48,10 +44,10 @@ public class UpdateEmployeeCommand : IRequest<Result<string>>, ICreateMapFrom<Us
             {
                 return Result<string>.BadRequest("Employee not found");
             }
-            employee.FirstName = command.FirstName;
-            employee.LastName = command.LastName;
-            employee.Email = command.Email;
-            employee.PhoneNumber = command.PhoneNumber;
+            employee.FirstName = command.Command.FirstName;
+            employee.LastName = command.Command.LastName;
+            employee.Email = command.Command.Email;
+            employee.PhoneNumber = command.Command.PhoneNumber;
 
             await _unitOfWork.Repository<User>().PutAsync(command.Id, employee);
 

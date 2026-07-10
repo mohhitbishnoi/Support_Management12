@@ -13,12 +13,12 @@ namespace Support_Management_WebApi.Controllers.AuthController;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IUnitOfWork _unitOfWork;
+  
 
-    public AuthController(IMediator mediator, IUnitOfWork unitOfWork)
+    public AuthController(IMediator mediator)
     {
         _mediator = mediator;
-        _unitOfWork = unitOfWork;
+        
     }
     [HttpPost("Register")]
     public async Task<IActionResult> Register(CreateUserCommand command)

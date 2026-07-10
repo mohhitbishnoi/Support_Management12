@@ -1,31 +1,51 @@
-﻿using AutoMapper;
+﻿using Application.Commons.Mappings;
+using AutoMapper;
+using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 
-namespace Application.Commons.Mappings;
+namespace Application.Commons.Mapping.Common;
 
 public class Mapping : Profile
 {
     public Mapping()
     {
-        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+        ApplyMappingsFromAssmebly(GetType().Assembly);
     }
 
-    private void ApplyMappingsFromAssembly(Assembly assembly)
+    private void ApplyMappingsFromAssmebly(Assembly assembly)
     {
         var profileType = typeof(Profile);
+        var mapFromType = typeof(IMapFrom<>);
+        var createMapFromType = typeof(ICreateMapFrom<>);
 
-        var types = assembly.GetExportedTypes();
+        bool HasInterface(Type t, Type interfaceType) =>
+            t.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == interfaceType);
+
+        var types = assembly.GetExportedTypes().Where(t =>
+            HasInterface(t, mapFromType) || HasInterface(t, createMapFromType)
+        ).ToList();
 
         foreach (var type in types)
         {
             var instance = Activator.CreateInstance(type);
 
-            if (instance == null)
-                continue;
+            var interfaces = type.GetInterfaces().Where(i => i.IsGenericType).ToList();
+            foreach (var @interface in interfaces)
+            {
+                var genericType = @interface.GetGenericTypeDefinition();
 
-            var methodInfo = type.GetMethod("createMappings");
+                if (genericType == mapFromType || genericType == createMapFromType)
+                {
+                    var mappingMethod = @interface.GetMethod(
+                        genericType == mapFromType ? nameof(IMapFrom<object>.CreateMappings) : nameof(ICreateMapFrom<object>.CreateMapping),
+                        new[] { profileType }
+                    );
 
-            methodInfo?.Invoke(instance, new object[] { this });
+                    mappingMethod?.Invoke(instance, new object[] { this });
+                }
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace Persistence.DataContexts
         public DbSet<TicketAttechment> ticketsAttechments { get;set; }
         public DbSet<TicketHistroy> ticketsHistroys { get;set; }
         public DbSet<TicketReply> ticketsReplys { get; set; }
+        public DbSet<Company> Companys { get; set; }
         
         
     }

@@ -7,6 +7,6 @@ namespace Application.Commons.Mappings;
 
 public  interface ICreateMapFrom<T>
 {
-    void createMappings(Profile profile) => profile.CreateMap(GetType(),typeof(T));
+    void CreateMapping(Profile profile) => profile.CreateMap(GetType(),typeof(T));
 
 }

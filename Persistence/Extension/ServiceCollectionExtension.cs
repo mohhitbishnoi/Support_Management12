@@ -21,8 +21,13 @@ public static void AddDbContext(this IServiceCollection services, IConfiguration
     
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(connectionString));
+       options.UseNpgsql(connectionString, npgsql =>
+       {
+           npgsql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+           npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+       }));
     }
     public static void AddRepository(this IServiceCollection services, IConfiguration configuration)
     {

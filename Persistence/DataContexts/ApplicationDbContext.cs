@@ -1,4 +1,5 @@
-﻿using Domain.Entitis;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using Domain.Entitis;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Persistence.DataContexts
         public DbSet<TicketAttechment> ticketsAttechments { get;set; }
         public DbSet<TicketHistroy> ticketsHistroys { get;set; }
         public DbSet<TicketReply> ticketsReplys { get; set; }
+
+        public DbSet<Company> Companys { get; set; }
         
         
     }

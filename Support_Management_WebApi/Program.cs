@@ -1,11 +1,11 @@
-using Microsoft.OpenApi;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Extension;
+using Infrastructure.Extension;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 //using Microsoft.IdentityModel.Tokens;
 using Persistence.Extension;
 using System.Text;
-using Infrastructure.Extension;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,4 +77,18 @@ app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next(context);
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = 400;
+        await context.Response.WriteAsync(ex.Message);
+    }
+});
+
 app.Run();

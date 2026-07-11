@@ -45,7 +45,7 @@ namespace Persistence.Extension.Repositories
 
         public async Task<T> PostAsync(T entity)
         {
-            entity.CreateDate = DateTime.Now;
+            entity.CreateDate = DateTime.UtcNow;
             entity.IsDeleted = false;
             entity.IsActive=true;
             await _applicationDbContext.Set<T>().AddAsync(entity);

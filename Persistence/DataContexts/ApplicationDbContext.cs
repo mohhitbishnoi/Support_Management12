@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
-using Domain.Entitis;
+﻿using Domain.Entitis;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

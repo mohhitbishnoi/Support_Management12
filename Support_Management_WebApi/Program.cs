@@ -2,10 +2,11 @@ using Microsoft.OpenApi;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Extension;
-using Microsoft.IdentityModel.Tokens;
+//using Microsoft.IdentityModel.Tokens;
 using Persistence.Extension;
 using System.Text;
 using Infrastructure.Extension;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

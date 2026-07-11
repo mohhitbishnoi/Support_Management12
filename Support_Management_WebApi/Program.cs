@@ -2,10 +2,11 @@ using Microsoft.OpenApi;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Application.Extension;
-using Microsoft.IdentityModel.Tokens;
+//using Microsoft.IdentityModel.Tokens;
 using Persistence.Extension;
 using System.Text;
 using Infrastructure.Extension;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,35 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    var key = builder.Configuration["JWTSettings:SecretKey"];
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWTSettings:Issuer"],
+        ValidAudience = builder.Configuration["JWTSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+    };
+});
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer",
+        new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter token like: Bearer {your JWT token}"
+        });
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    { [new OpenApiSecuritySchemeReference("Bearer", document, externalResource: null)] = [] });
+});
 
 builder.Services.AddAuthorization();
 

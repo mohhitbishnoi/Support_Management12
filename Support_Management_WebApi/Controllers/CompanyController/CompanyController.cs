@@ -20,6 +20,7 @@ namespace Support_Management_WebApi.Controllers.CompanyController
             _mediator = mediator;
         }
 
+        [Authorize(Roles ="Admin")]
         [HttpPost("Create-Company")]
         public async Task<IActionResult> Create(CreateCompanyCommand command)
         {

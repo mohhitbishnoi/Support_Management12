@@ -32,20 +32,7 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddService();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication("JwtBearerDefaults.AuthenticationScheme").AddJwtBearer(options=>
-{
-    var key = builder.Configuration["JwtSettings:SecretKey"]; 
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-    };
-});
+builder.Services.AddAuthentication();
 
 builder.Services.AddAuthorization();
 
@@ -56,6 +43,8 @@ app.UseCors("Frontend");
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseSwagger();
 app.UseSwaggerUI();

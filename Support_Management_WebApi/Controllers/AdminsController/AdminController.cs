@@ -39,9 +39,9 @@ public class AdminController : ControllerBase
 
     }
     [HttpPut("Update-Employee")]
-    public async Task<IActionResult>UpdateEmployee (int id)
+    public async Task<IActionResult>UpdateEmployee (int id,AddEmployeeCommand command)
     {
-        var result = await _mediator.Send(new UpdateEmployeeCommand(id));
+        var result = await _mediator.Send(new UpdateEmployeeCommand(id,command));
             return ResponseHelper.GenerateResponse(result);
     }
     [HttpDelete("Delete-Employee")]

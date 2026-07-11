@@ -12,8 +12,8 @@ using Persistence.DataContexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260708075225_init2")]
-    partial class init2
+    [Migration("20260709051851_intial")]
+    partial class intial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -261,7 +261,6 @@ namespace Persistence.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RoleDescription")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RoleName")

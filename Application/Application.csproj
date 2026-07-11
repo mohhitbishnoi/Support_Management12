@@ -25,6 +25,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Tickets\Commands\" />
+  </ItemGroup>
 	
 
 </Project>

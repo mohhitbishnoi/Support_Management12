@@ -23,26 +23,32 @@ public class ResetPasswordCommand : IRequest<Result<string>>
 
         public async Task<Result<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            var user = await _unitOfWork.Repository<User>().Entities.FirstOrDefaultAsync(x => x.Email == request.Email);
+            var user = await _unitOfWork.Repository<User>()
+                 .Entities.FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
             if (user == null)
             {
-                return Result<string>.BadRequest("Email or UserName not found");
+                return Result<string>.BadRequest("Email or UserName Are not match");
             }
 
-            var isValidOtp = await _unitOfWork.Repository<Otp>().Entities.AnyAsync(x => x.Id == user.Id && x.OtpCode == request.OtpCode, cancellationToken);
-            if (!isValidOtp)
+
+            var isvalidateotp = await _unitOfWork.Repository<Otp>()
+                .Entities.AnyAsync(x => x.UserId == user.Id && x.OtpCode == request.OtpCode, cancellationToken);
+
+            if (!isvalidateotp)
             {
-                return Result<string>.BadRequest("Invalid OTP code");
+                return Result<string>.BadRequest("Invalid OTP");
             }
 
             user.Password = request.NewPassword;
-            var result = await _unitOfWork.Save(cancellationToken);
 
+
+            var result = await _unitOfWork.Save(cancellationToken);
             if (result <= 0)
             {
-                return Result<string>.BadRequest("Failed to reset password");
+                return Result<string>.BadRequest("Failed to update password");
             }
-            return Result<string>.Success("Password reset successfully");
+
+            return Result<string>.Success("Password changed successfully");
         }
     }
 }

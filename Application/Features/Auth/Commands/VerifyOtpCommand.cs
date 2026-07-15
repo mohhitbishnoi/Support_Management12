@@ -22,23 +22,45 @@ public class VerifyOtpCommand : IRequest<Result<string>>
         }
         public async Task<Result<string>> Handle(VerifyOtpCommand request, CancellationToken cancellationToken)
         {
-            var otp = await _unitOfWork.Repository<Otp>().Entities.OrderByDescending(x => x.Time).FirstOrDefaultAsync(y=>y.OtpCode == request.OtpCode);
+            var otp = await _unitOfWork.Repository<Otp>()
+               .Entities
+               .Where(x => x.OtpCode == request.OtpCode)
+               .OrderByDescending(x => x.Time)
+               .FirstOrDefaultAsync(cancellationToken);
+
             if (otp == null)
             {
-                return Result<string>.BadRequest("Invalid OTP code.");
+                return Result<string>.BadRequest("Invalid OTP");
             }
-            if(otp.IsUsed)
+
+            if (otp.IsUsed)
             {
-                return Result<string>.BadRequest("OTP code has already been used.");
+                return Result<string>.BadRequest("OTP already used");
             }
-            var TodayOtpCount = await _unitOfWork.Repository<Otp>().Entities.Where
-                (x=>x.Id==otp.Id && x.Time.Date == DateTime.Now.Date).CountAsync();
-           if(TodayOtpCount <= 10)
+
+
+            if (otp.Time.AddMinutes(10)<=DateTime.UtcNow)
             {
-                return Result<string>.BadRequest("You have exceeded the maximum number of OTP requests for today.");
+                return Result<string>.BadRequest("OTP has expired");
             }
-           otp.IsUsed = true;
-            return Result<string>.Success("OTP verified successfully.");
+
+            var todayOtpCount = await _unitOfWork.Repository<Otp>()
+                .Entities
+                .Where(x =>
+                    x.UserId == otp.UserId &&
+                    x.Time.Date == DateTime.UtcNow.Date)
+                .CountAsync(cancellationToken);
+
+            if (todayOtpCount < 10)
+            {
+                return Result<string>.BadRequest("You have reached your daily limit");
+            }
+
+            otp.IsUsed = true;
+
+            await _unitOfWork.Save(cancellationToken);
+
+            return Result<string>.Success("OTP verified successfully");
         }
     }
 }

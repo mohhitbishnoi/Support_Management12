@@ -13,6 +13,7 @@ public class Otp: BaseAuditableEntity
     public bool IsUsed { get; set; }
 
     public DateTime Time { get; set; }
+
     [ForeignKey("User")]
     public int UserId { get; set; }
     public User? User { get; set; }

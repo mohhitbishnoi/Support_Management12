@@ -1,7 +1,7 @@
 ﻿using Application.Commons;
 using Application.Commons.Mappings;
 using Domain.Entitis;
-using Domain.Entitis.Enums;
+using Domain.Enum;
 
 namespace Application.Dtos.Users;
 
@@ -17,7 +17,7 @@ public class GetUserDto : BaseDto, IMapFrom<User>
 
     public string Password { get; set; }
 
-    // Enum Property
+  
     public RoleId RoleId { get; set; }
 
     public string? RoleName { get; set; }

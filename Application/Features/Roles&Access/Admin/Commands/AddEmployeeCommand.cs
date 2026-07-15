@@ -3,7 +3,7 @@ using Application.Interfaces.Repository;
 using AutoMapper;
 using DocumentFormat.OpenXml.Office2016.Excel;
 using Domain.Entitis;
-using Domain.Entitis.Enums;
+using Domain.Enum;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;

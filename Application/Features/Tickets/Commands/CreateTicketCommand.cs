@@ -8,13 +8,16 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Shared;
 
+
 namespace Application.Features.Tickets.TicketCommands;
 
 public class CreateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
 {
+
     public string TicketTitle { get; set; }
     public string TicketDescription { get; set; }
     public string TicketPriority { get; set; }
+    public TicketType TicketType { get; set; }
     public int CompanyId { get; set; }
     public IFormFile? File { get; set; }
 

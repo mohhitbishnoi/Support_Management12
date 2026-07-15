@@ -403,6 +403,9 @@ namespace Persistence.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ticketSource")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ticketType")
                         .HasColumnType("integer");
 
@@ -643,13 +646,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entitis.Ticket", b =>
                 {
-                    b.HasOne("Domain.Entitis.Company", "company")
+                    b.HasOne("Domain.Entitis.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("company");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Domain.Entitis.TicketAttechment", b =>

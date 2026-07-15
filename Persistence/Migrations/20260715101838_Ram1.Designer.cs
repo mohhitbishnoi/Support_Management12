@@ -12,8 +12,8 @@ using Persistence.DataContexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260710161802_support_management")]
-    partial class support_management
+    [Migration("20260715101838_Ram1")]
+    partial class Ram1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -366,11 +366,17 @@ namespace Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("CreateDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("integer");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -400,7 +406,12 @@ namespace Persistence.Migrations
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ticketType")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("tickets");
                 });
@@ -631,6 +642,17 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entitis.Product", null)
                         .WithMany("Purchase")
                         .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("Domain.Entitis.Ticket", b =>
+                {
+                    b.HasOne("Domain.Entitis.Company", "company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("company");
                 });
 
             modelBuilder.Entity("Domain.Entitis.TicketAttechment", b =>

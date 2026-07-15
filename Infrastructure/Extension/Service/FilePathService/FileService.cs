@@ -22,7 +22,7 @@ public class FileService : IFileService
         if (file == null || file.Length == 0)
             throw new Exception("No file selected.");
 
-        var extension = Path.GetExtension(file.FileName).ToLower();
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
         string[] validExtensions =
         {
@@ -41,10 +41,20 @@ public class FileService : IFileService
             throw new Exception("Invalid file type.");
 
         if (file.Length > 5 * 1024 * 1024)
-            throw new Exception("File size exceeds 5 MB.");
+            throw new Exception("File size cannot exceed 5 MB.");
 
-        if (string.IsNullOrWhiteSpace(_environment.WebRootPath))
-            throw new Exception("WebRootPath is not configured.");
+        // WebRootPath agar null ho to ContentRootPath/wwwroot use karo
+        string rootPath = _environment.WebRootPath;
+
+        if (string.IsNullOrWhiteSpace(rootPath))
+        {
+            rootPath = Path.Combine(_environment.ContentRootPath, "wwwroot");
+        }
+
+        if (!Directory.Exists(rootPath))
+        {
+            Directory.CreateDirectory(rootPath);
+        }
 
         string folderName = filetype switch
         {
@@ -56,25 +66,21 @@ public class FileService : IFileService
             _ => "Others"
         };
 
-        string fileName = $"{Guid.NewGuid()}{extension}";
+        string uploadFolder = Path.Combine(rootPath, "Uploads", folderName);
 
-        string folderPath = Path.Combine(
-            _environment.WebRootPath,
-            "Uploads",
-            folderName);
-
-        if (!Directory.Exists(folderPath))
+        if (!Directory.Exists(uploadFolder))
         {
-            Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(uploadFolder);
         }
 
-        string filePath = Path.Combine(folderPath, fileName);
+        string fileName = $"{Guid.NewGuid()}{extension}";
+        string fullPath = Path.Combine(uploadFolder, fileName);
 
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        using (var stream = new FileStream(fullPath, FileMode.Create))
         {
             await file.CopyToAsync(stream, cancellationToken);
         }
 
-        return Path.Combine("Uploads", folderName, fileName).Replace("\\", "/");
+        return $"Uploads/{folderName}/{fileName}";
     }
 }

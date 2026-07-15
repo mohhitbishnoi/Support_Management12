@@ -19,7 +19,10 @@ public class UpdateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
     public string TicketPriority { get; set; }
     public string Status { get; set; }
     public int CompanyId { get; set; }
+
     public TicketType TicketType { get; set; }
+    public TicketSource ticketSource { get; set; }
+
     public IFormFile? File { get; set; }
 
     public void Mapping(Profile profile)

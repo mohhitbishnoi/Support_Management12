@@ -12,8 +12,8 @@ using Persistence.DataContexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260714055501_new")]
-    partial class @new
+    [Migration("20260715105654_Ram")]
+    partial class Ram
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -376,7 +376,6 @@ namespace Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -405,6 +404,12 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ticketSource")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ticketType")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -644,13 +649,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entitis.Ticket", b =>
                 {
-                    b.HasOne("Domain.Entitis.Company", "company")
+                    b.HasOne("Domain.Entitis.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("company");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Domain.Entitis.TicketAttechment", b =>

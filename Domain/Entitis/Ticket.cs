@@ -1,4 +1,5 @@
 ﻿using Domain.Commons;
+using Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,6 +17,7 @@ public class Ticket: BaseAuditableEntity
     [ForeignKey("Company")]
     public int CompanyId { get; set; }
     public Company? company { get; set; }
+    public TicketType ticketType { get; set; }
     public ICollection<TicketReply> Replies { get; set; }
     public ICollection<TicketAttechment> Attechments { get; set; }
     public ICollection<TicketHistroy> TicketHistories { get; set; }

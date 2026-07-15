@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Shared;
 
+
 namespace Application.Features.Tickets.TicketCommands;
 
 public class UpdateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
@@ -18,6 +19,7 @@ public class UpdateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
     public string TicketPriority { get; set; }
     public string Status { get; set; }
     public int CompanyId { get; set; }
+    public TicketType TicketType { get; set; }
     public IFormFile? File { get; set; }
 
     public void Mapping(Profile profile)

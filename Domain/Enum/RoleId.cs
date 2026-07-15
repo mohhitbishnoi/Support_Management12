@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Entitis.Enums;
+namespace Domain.Enum;
 
 public enum RoleId
 {

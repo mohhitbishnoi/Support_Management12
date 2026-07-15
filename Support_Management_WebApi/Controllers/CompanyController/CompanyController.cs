@@ -11,6 +11,8 @@ namespace Support_Management_WebApi.Controllers.CompanyController
 {
     [Route("api/[controller]")]
     [ApiController]
+
+    [Authorize(Roles = "Admin")]
     public class CompanyController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,15 +22,15 @@ namespace Support_Management_WebApi.Controllers.CompanyController
             _mediator = mediator;
         }
 
-        [Authorize(Roles ="Admin")]
-        [HttpPost("Create-Company")]
+       
+        [HttpPost("create-company")]
         public async Task<IActionResult> Create(CreateCompanyCommand command)
         {
             var response = await _mediator.Send(command);
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpGet("All User")]
+        [HttpGet("all-company")]
         public async Task<IActionResult> GetAll()
         {
             var response = await _mediator.Send(new GetAllCompaniesQuery());
@@ -42,15 +44,15 @@ namespace Support_Management_WebApi.Controllers.CompanyController
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpPut("Update-Company {id}")]
+        [HttpPut("update-company/{id}")]
 
-        public async Task<IActionResult> UpdateCompany(CreateCompanyCommand command, int id)
+        public async Task<IActionResult> UpdateCompany(int id,CreateCompanyCommand command)
         {
             var response = await _mediator.Send(new UpdateCompanyCommand(id,command));
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpDelete("Delete-Company{id}")]
+        [HttpDelete("delete-company{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
             var response = await _mediator.Send(new DeleteCompanyCommand(id));

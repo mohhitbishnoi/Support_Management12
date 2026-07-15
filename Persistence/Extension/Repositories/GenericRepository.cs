@@ -37,7 +37,7 @@ namespace Persistence.Extension.Repositories
             return exist;
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             var exist = await _applicationDbContext.Set<T>().FirstOrDefaultAsync(x => x.Id!.Equals(id) && !x.IsDeleted);
             return exist;

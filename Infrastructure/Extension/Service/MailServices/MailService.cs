@@ -19,10 +19,22 @@ public class MailService : IMailService
     }
     public async Task<string> SendMail(MailDto mailDto)
     {
-        var from = _configuration["MailSettings:From"];
-        var password = _configuration["MailSettings:Password"];
-        var port = Convert.ToInt32(_configuration["MailSettings:Port"]);
-        var host = _configuration["MailSettings:Host"];
+        var from = _configuration["EmailSettings:Email"];
+        var password = _configuration["EmailSettings:Password"];
+        var host = _configuration["EmailSettings:Host"];
+        var portString = _configuration["EmailSettings:Port"];
+
+        if (string.IsNullOrWhiteSpace(from))
+            throw new Exception("EmailSettings:Email is missing.");
+
+        if (string.IsNullOrWhiteSpace(password))
+            throw new Exception("EmailSettings:Password is missing.");
+
+        if (string.IsNullOrWhiteSpace(host))
+            throw new Exception("EmailSettings:Host is missing.");
+
+        if (!int.TryParse(portString, out var port))
+            throw new Exception("EmailSettings:Port is invalid.");
 
         var fromMail = new MimeKit.MailboxAddress("Mohhit", from);
         var message = new MimeKit.MimeMessage();

@@ -69,7 +69,6 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
-app.UseAuthorization();
 
 app.MapControllers();
 app.UseAuthentication();

@@ -26,31 +26,39 @@ public class ForgetPasswordCommand : IRequest<Result<string>>
         public async Task<Result<string>> Handle(ForgetPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.Repository<User>().Entities.FirstOrDefaultAsync(x => x.Email == request.Email);
+
             if (user == null)
             {
-                return Result<string>.BadRequest("User not found");
+                return Result<string>.BadRequest("User Not Found");
             }
+
             var random = new Random();
-            int code = random.Next(100000, 999999);
+            int otpCode = random.Next(1000, 9999);
 
             var otp = new Otp
             {
-                OtpCode = code,
-                IsUsed = false,
-                Time = DateTime.Now,
+                OtpCode = otpCode,
+                Time = DateTime.UtcNow,
+                UserId = user.Id,
+                IsUsed = false
             };
+
             await _unitOfWork.Repository<Otp>().PostAsync(otp);
             await _unitOfWork.Save(cancellationToken);
+
+
+            //string Subject = "Forgot-Password OTP Verification";
+            //string Body = ("Hi this Side Otps service Handler,We Send you Otp for Forgot-Password" + otp);
 
             var maildto = new MailDto
             {
                 To = request.Email,
-                Subject = "Forget Password OTP Verification",
+                Subject = "Forgot-Password OTP Verification",
                 Body = ("<h1>Hi <br> this Side Otps service Handler,<br> We Send you Otp for Forgot-Password </h1>" + otp.OtpCode)
             };
 
             await _emailService.SendMail(maildto);
-            return Result<string>.Success("OTP sent successfully");
+            return Result<string>.Success("OTP Sent Successfully");
         }
     }
 }

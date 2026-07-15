@@ -1,5 +1,7 @@
-﻿using Application.Interfaces.Services.MailServices;
+﻿using Application.Interfaces.Services.FilePathService;
+using Application.Interfaces.Services.MailServices;
 using Application.Interfaces.Services.TokenServices;
+using Infrastructure.Extension.Service.FilePathService;
 using Infrastructure.Extension.Service.MailServices;
 using Infrastructure.Extension.Service.TokenSerivces;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +21,8 @@ public static class ServiceCollectionExtension
     {
         services
             .AddScoped<IMailService, MailService>()
-            .AddScoped<ITokenService, TokenSerivce>();
+            .AddScoped<ITokenService, TokenSerivce>()
+            .AddTransient<IFileService, FileService>();
             
 
     }

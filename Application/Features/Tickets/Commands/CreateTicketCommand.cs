@@ -18,6 +18,8 @@ public class CreateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
     public string TicketDescription { get; set; }
     public string TicketPriority { get; set; }
     public TicketType TicketType { get; set; }
+    public TicketSource ticketSource { get; set; }
+
     public int CompanyId { get; set; }
     public IFormFile? File { get; set; }
 

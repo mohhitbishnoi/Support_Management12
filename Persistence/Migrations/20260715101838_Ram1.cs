@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class support_management : Migration
+    public partial class Ram1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -124,6 +124,9 @@ namespace Persistence.Migrations
                     TicketDescription = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     TicketPriority = table.Column<string>(type: "text", nullable: false),
+                    FilePath = table.Column<string>(type: "text", nullable: true),
+                    CompanyId = table.Column<int>(type: "integer", nullable: false),
+                    ticketType = table.Column<int>(type: "integer", nullable: false),
                     CreatedBy = table.Column<int>(type: "integer", nullable: true),
                     UpdatedBy = table.Column<int>(type: "integer", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -134,6 +137,12 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tickets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tickets_Companys_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,6 +369,11 @@ namespace Persistence.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tickets_CompanyId",
+                table: "tickets",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ticketsAttechments_TicketId",
                 table: "ticketsAttechments",
                 column: "TicketId");
@@ -393,9 +407,6 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Companys");
-
             migrationBuilder.DropTable(
                 name: "Departments");
 
@@ -431,6 +442,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Companys");
         }
     }
 }

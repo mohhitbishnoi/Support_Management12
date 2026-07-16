@@ -1,6 +1,6 @@
 ﻿using Application.Interfaces.Repository;
 using Domain.Entitis;
-using Domain.Entitis.Enums;
+using Domain.Enum;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared;

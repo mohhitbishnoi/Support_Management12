@@ -16,6 +16,11 @@ public class Ticket: BaseAuditableEntity
 
     [ForeignKey("Company")]
     public int CompanyId { get; set; }
+
+    [ForeignKey("Customer")]
+    public int CustomerId { get; set; }
+
+    public User? Customer { get; set; } = null;
     public Company? Company { get; set; }
     public TicketType ticketType { get; set; }
     public TicketSource ticketSource { get; set; }

@@ -6,5 +6,5 @@ namespace Application.Interfaces.Services.TokenServices;
 
 public interface ITokenService
 {
-    Task<string> GenerateToken(string UserId, string Role);
+    Task<string> GenerateToken(int UserId, string Role);
 }

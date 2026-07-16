@@ -23,14 +23,14 @@ namespace Support_Management_WebApi.Controllers.CompanyController
         }
 
        
-        [HttpPost("create-company")]
+        [HttpPost]
         public async Task<IActionResult> Create(CreateCompanyCommand command)
         {
             var response = await _mediator.Send(command);
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpGet("all-company")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var response = await _mediator.Send(new GetAllCompaniesQuery());
@@ -44,7 +44,7 @@ namespace Support_Management_WebApi.Controllers.CompanyController
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpPut("update-company/{id}")]
+        [HttpPut("{id}")]
 
         public async Task<IActionResult> UpdateCompany(int id,CreateCompanyCommand command)
         {
@@ -52,7 +52,7 @@ namespace Support_Management_WebApi.Controllers.CompanyController
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [HttpDelete("delete-company{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompany(int id)
         {
             var response = await _mediator.Send(new DeleteCompanyCommand(id));

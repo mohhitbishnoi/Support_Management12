@@ -43,7 +43,7 @@ internal class AdminLoginCommandHandler : IRequestHandler<AdminLoginCommand, Res
         {
             return Result<LoginResponse>.BadRequest("Access Denied");
         }
-        var token = await _tokenService.GenerateToken(user.Id.ToString(),
+        var token = await _tokenService.GenerateToken(user.Id,
             user.Role.RoleName
             );
        var response = new LoginResponse

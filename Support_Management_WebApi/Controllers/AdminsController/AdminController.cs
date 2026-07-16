@@ -56,12 +56,12 @@ public class AdminController : ControllerBase
         var result = await _mediator.Send(new ViewAllEmployeeQuery());
         return ResponseHelper.GenerateResponse(result);
     }
-    [HttpGet("View-Tickets")]
-    public async Task<IActionResult>GetAllTickets(ViewAllTicketsQuery query)
-    {
-        var result = await _mediator.Send(query);
-        return ResponseHelper.GenerateResponse(result);
-    }
+    //[HttpGet("View-Tickets")]
+    //public async Task<IActionResult>GetAllTickets(ViewAllTicketsQuery query)
+    //{
+    //    var result = await _mediator.Send(query);
+    //    return ResponseHelper.GenerateResponse(result);
+    //}
     [HttpGet("View-Users")]
     public async Task<IActionResult>GetAllUsers(ViewUsersQuery query)
     {

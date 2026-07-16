@@ -1,7 +1,8 @@
 ﻿using Application.Features.Users.Commands;
 using Application.Interfaces.Repository;
-using MediatR;
 using Domain.Entitis;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Support_Management_WebApi.Responces;
@@ -51,9 +52,9 @@ public class AuthController : ControllerBase
         return ResponseHelper.GenerateResponse(response);
     }
 
+    [Authorize]
     [HttpPost("Reset-password")]
-
-    public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
+     public async Task<IActionResult> ResetPassword(ResetPasswordCommand command)
     {
         var response = await _mediator.Send(command);
         return ResponseHelper.GenerateResponse(response);

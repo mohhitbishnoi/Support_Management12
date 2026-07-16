@@ -18,7 +18,7 @@ public class TokenSerivce: ITokenService
     {
         _configuration = configuration;
     }
-    public async Task<string> GenerateToken(string UserId, string Role)
+    public async Task<string> GenerateToken(int UserId, string Role)
     {
         var key = _configuration["JwtSettings:SecretKey"];
         var issuer = _configuration["JwtSettings:Issuer"];

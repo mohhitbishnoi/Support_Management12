@@ -45,7 +45,7 @@ internal class UserLoginCommandHandler : IRequestHandler<UserLoginCommand, Resul
         }
 
         var token = await _tokenService.GenerateToken(
-            user.Id.ToString(),
+            user.Id,
             user.Role.RoleName
         );
 

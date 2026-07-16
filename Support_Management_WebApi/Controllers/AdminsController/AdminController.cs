@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Support_Management_WebApi.Responces;
-
 namespace Support_Management_WebApi.Controllers.AdminsComtroller;
 
 [Route("api/[controller]")]

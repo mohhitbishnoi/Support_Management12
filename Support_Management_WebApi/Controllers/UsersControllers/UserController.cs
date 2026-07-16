@@ -47,4 +47,6 @@ public class UserController : ControllerBase
         var result = await _mediator.Send(new  GetAllUsersQuery());
         return ResponseHelper.GenerateResponse(result);
     }
+
+
 }

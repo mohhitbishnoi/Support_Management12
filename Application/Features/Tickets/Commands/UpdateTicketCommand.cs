@@ -16,10 +16,10 @@ public class UpdateTicketCommand : IRequest<Result<int>>, ICreateMapFrom<Ticket>
     public int TicketId { get; set; }
     public string TicketTitle { get; set; }
     public string TicketDescription { get; set; }
-    public string TicketPriority { get; set; }
     public string Status { get; set; }
     public int CompanyId { get; set; }
 
+    public  TicketPriority ticketPriority { get; set; }
     public TicketType TicketType { get; set; }
     public TicketSource ticketSource { get; set; }
 
@@ -68,7 +68,6 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, R
 
         ticket.TicketTitle = request.TicketTitle;
         ticket.TicketDescription = request.TicketDescription;
-        ticket.TicketPriority = request.TicketPriority;
         ticket.Status = request.Status;
         ticket.CompanyId = request.CompanyId;
 

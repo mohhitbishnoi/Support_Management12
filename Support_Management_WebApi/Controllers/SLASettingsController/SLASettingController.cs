@@ -1,6 +1,6 @@
 ﻿using Application.Features.SLASettings.Commands;
 using Application.Features.SLASettings.Queries;
-using Domain.Entitis.Enums;
+using Domain.Enum;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Support_Management_WebApi.Responces;

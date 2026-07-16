@@ -2,7 +2,7 @@
 using Application.Interfaces.Repository;
 using AutoMapper;
 using Domain.Entitis;
-using Domain.Entitis.Enums;
+using Domain.Enum;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Shared;
@@ -36,7 +36,7 @@ public class CreateSLASettingCommand : IRequest<Result<string>>, ICreateMapFrom<
             CreateSLASettingCommand request,
             CancellationToken cancellationToken)
         {
-            // Check duplicate priority
+           
             var exists = await _unitOfWork.Repository<SlASetting>()
                 .Entities
                 .AnyAsync(x => x.Priority == request.Priority, cancellationToken);

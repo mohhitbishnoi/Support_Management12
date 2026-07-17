@@ -39,7 +39,7 @@ public class UpdateSLASettingCommand : IRequest<Result<string>>
                 return Result<string>.BadRequest("SLA Setting not found.");
             }
 
-            sla.ticketPriority = request.Priority;
+            sla.Priority = request.Priority;
 
             switch (request.Priority)
             {

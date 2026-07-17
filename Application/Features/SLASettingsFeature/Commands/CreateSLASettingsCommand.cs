@@ -39,7 +39,7 @@ public class CreateSLASettingCommand : IRequest<Result<string>>, ICreateMapFrom<
            
             var exists = await _unitOfWork.Repository<SlASetting>()
                 .Entities
-                .AnyAsync(x => x.ticketPriority == request.Priority, cancellationToken);
+                .AnyAsync(x => x.Priority == request.Priority, cancellationToken);
 
             if (exists)
             {

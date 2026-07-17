@@ -27,8 +27,8 @@ namespace Support_Management_WebApi.Controllers.TicketController
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [Authorize(Roles = "Customer")]
         [Authorize(Roles = "Admin")]
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -36,9 +36,9 @@ namespace Support_Management_WebApi.Controllers.TicketController
             return ResponseHelper.GenerateResponse(response);
         }
 
-        [Authorize(Roles = "Customer")]
         [Authorize(Roles = "Admin")]
-        [HttpGet("{id}")]
+
+        [HttpGet("TicketById{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await _mediator.Send(new GetByIdTicketQueries
@@ -76,15 +76,17 @@ namespace Support_Management_WebApi.Controllers.TicketController
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetMyTickets(int userId)
+        [HttpGet("getTicketByUserId{userId}")]
+        public async Task<IActionResult> GetMyTickets()
         {
-            var response = await _mediator.Send(new GetMyTicketsQueries
+            var userId = int.Parse(User.FindFirst("UserId")!.Value);
+
+            var result = await _mediator.Send(new GetMyTicketsQueries
             {
                 UserId = userId
             });
 
-            return ResponseHelper.GenerateResponse(response);
+            return Ok(result);
         }
     }
 }

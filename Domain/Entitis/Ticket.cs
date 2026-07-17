@@ -13,9 +13,12 @@ public class Ticket: BaseAuditableEntity
     public string Status { get; set; }
     public string TicketPriority { get; set; }
     public string? FilePath { get; set; }
+    public int? AssignedEmployeeId { get; set; }
+    public User? AssignedEmployee {  get; set; }
 
     [ForeignKey("Company")]
     public int CompanyId { get; set; }
+
     [ForeignKey("Customer")]
     public int CustomerId {  get; set; }
 

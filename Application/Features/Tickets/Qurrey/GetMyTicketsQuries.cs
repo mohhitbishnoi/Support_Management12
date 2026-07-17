@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Repository;
 using Domain.Entitis;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Features.Tickets.TicketQueries;
@@ -21,9 +22,7 @@ internal class GetMyTicketsQueriesHandler : IRequestHandler<GetMyTicketsQueries,
 
     public async Task<Result<List<Ticket>>> Handle(GetMyTicketsQueries request, CancellationToken cancellationToken)
     {
-        var tickets = (await _unitOfWork.Repository<Ticket>().GetAllAsync())
-            .Where(x => x.Id == request.UserId)
-            .ToList();
+        var tickets = await _unitOfWork.Repository<Ticket>().Entities.Where(x => x.CustomerId == request.UserId).ToListAsync(cancellationToken);
 
         if (!tickets.Any())
         {

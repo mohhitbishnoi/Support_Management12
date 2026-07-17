@@ -20,17 +20,17 @@ public static class ServiceCollectionExtension
 public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
     
     {
-        var connectionstring = configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(connectionstring));
+        //var connectionstring = configuration.GetConnectionString("DefaultConnection");
+        //services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(connectionstring));
 
-        // var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        // services.AddDbContext<ApplicationDbContext>(options =>
-        //options.UseNpgsql(connectionString, npgsql =>
-        //{
-        //    npgsql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
-        //    npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-        //}));
+        services.AddDbContext<ApplicationDbContext>(options =>
+       options.UseNpgsql(connectionString, npgsql =>
+       {
+           npgsql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+           npgsql.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+       }));
     }
     public static void AddRepository(this IServiceCollection services, IConfiguration configuration)
     {

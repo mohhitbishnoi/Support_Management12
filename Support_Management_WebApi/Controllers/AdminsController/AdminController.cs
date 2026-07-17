@@ -1,6 +1,7 @@
 ﻿using Application.Features.Roles_Access.Admin;
 using Application.Features.Roles_Access.Admin.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Support_Management_WebApi.Responces;
@@ -65,6 +66,15 @@ public class AdminController : ControllerBase
     public async Task<IActionResult>GetAllUsers(ViewUsersQuery query)
     {
         var result = await _mediator.Send(query);
+        return ResponseHelper.GenerateResponse(result);
+    }
+
+    [Authorize(Roles ="Admin")]
+    [HttpPut("Assign-employee")]
+
+    public async Task<IActionResult>AssignEmployee(AssignEmployeeCommand command)
+    {
+        var result = await _mediator.Send(command);
         return ResponseHelper.GenerateResponse(result);
     }
 }

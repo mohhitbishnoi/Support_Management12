@@ -80,7 +80,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, R
         await _unitOfWork.Repository<Ticket>().PostAsync(ticket);
 
         await _unitOfWork.Save(cancellationToken);
-        await _mailService.SendMail(new MailDto
+       var mail =new MailDto
         {
             To = customer.Email,
             Subject = "Ticket Submitted Successfully",
@@ -93,7 +93,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, R
         <p>Our support team will contact you soon.</p>
         <br/>
         <p>Thank you,<br/>Support Team</p>"
-        });
+        };
 
         return Result<int>.Success(ticket.Id, "Ticket Created Successfully.");
     }

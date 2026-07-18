@@ -1,10 +1,8 @@
 ﻿using Application.Dtos.MailDtos;
 using Application.Interfaces.Services.MailServices;
-using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using IMailService = Application.Interfaces.Services.MailServices.IMailService;
 
 namespace Infrastructure.Extension.Service.MailServices;
 

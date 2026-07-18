@@ -3,7 +3,7 @@ using Infrastructure.Extension;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-//using Microsoft.IdentityModel.Tokens;
+using Persistence.DataContexts;
 using Persistence.Extension;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -78,13 +78,24 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
-app.UseCors("Frontend");
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
 
-app.MapControllers();
-app.UseAuthentication();
-app.UseAuthorization();
+    await RoleSeeder.SeedAsync(context);
+}
+
+app.UseHttpsRedirection();
+
+app.UseCors("Frontend");
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
 app.Run();

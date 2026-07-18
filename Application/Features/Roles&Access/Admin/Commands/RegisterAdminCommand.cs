@@ -34,39 +34,37 @@ public class RegisterAdminCommand : IRequest<Result<string>>, ICreateMapFrom<Use
 
         public async Task<Result<string>> Handle(RegisterAdminCommand command, CancellationToken cancellationToken)
         {
-            var adminExists = await _unitOfWork.Repository<User>()
-                .Entities
-                .AnyAsync(x => x.RoleId == (int)RoleId.Admin && !x.IsDeleted,
-                    cancellationToken);
+            var emailExists = await _unitOfWork.Repository<User>().Entities
 
-            if (adminExists)
-            {
-                return Result<string>.BadRequest("Admin already exists.");
-            }
+        .AnyAsync(x => x.Email == command.Email && !x.IsDeleted, cancellationToken);
 
-            var emailExists = await _unitOfWork.Repository<User>()
-                .Entities
-                .AnyAsync(x => x.Email == command.Email, cancellationToken);
 
             if (emailExists)
             {
                 return Result<string>.BadRequest("Email already exists.");
-            }
 
+            }
             var admin = new User
             {
                 FirstName = command.FirstName,
+
                 LastName = command.LastName,
+
                 Email = command.Email,
+
                 Password = command.Password,
+
                 PhoneNumber = command.PhoneNumber,
+
                 RoleId = (int)RoleId.Admin
+
             };
 
-            admin.RoleId = (int)RoleId.Admin;
 
             await _unitOfWork.Repository<User>().PostAsync(admin);
+
             await _unitOfWork.Save(cancellationToken);
+
 
             return Result<string>.Success("Admin Registered Successfully.");
         }

@@ -14,8 +14,8 @@ namespace Domain.Entitis
 
         public long PhoneNumber { get; set; }
 
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
 
-        public Role Role { get; set; } = null!;
+        public Role? Role { get; set; }
     }
 }
